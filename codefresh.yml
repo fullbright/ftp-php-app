@@ -1,0 +1,41 @@
+# More examples of Codefresh YAML can be found at
+# https://codefresh.io/docs/docs/yaml-examples/examples/
+
+version: "1.0"
+# Stages can help you organize your steps in stages
+stages:
+  - "clone"
+  - "install"
+  - "transfer"
+steps:
+  clone:
+    title: "Cloning main repository..."
+    type: "git-clone"
+    arguments:
+      repo: "anna-codefresh/php-composer-sample-app"
+      git: "github"
+    stage: "clone"
+  install_dependencies:
+    title: "Collecting Php dependencies..."
+    type: "freestyle"
+    working_directory: "./php-composer-sample-app"
+    arguments:
+      image: "composer:1.9.3"
+      commands:
+        - "composer install --ignore-platform-reqs --no-interaction --no-plugins --no-scripts --prefer-dist"
+    stage: "install"
+  steps:
+    ftp_transfer:
+    title: "Transferring application to VM via ftp..."
+    type: "freestyle" 
+    working_directory: "./php-composer-sample-app"
+    arguments:
+      image: "dockito/lftp-client:latest"
+      environment:
+        - USER=<USER>
+        - PASSWORD=<PASSWORD>
+        - HOST=<HOST>
+        - PUB_FTP_DIR=<PATH/TO/DIR>
+      commands:
+        - lftp -e "set ftp:use-site-utime2 false; mirror -x ^\.git/$ -X flat-logo.png -p -R php-composer-sample-app $PUB_FTP_DIR/php-composer-sample-app; exit" -u $USER,$PASSWORD $HOST
+    stage: "transfer"

@@ -12,7 +12,7 @@ steps:
     title: "Cloning main repository..."
     type: "git-clone"
     arguments:
-      repo: "anna-codefresh/php-composer-sample-app"
+      repo: "codefresh-contrib/ftp-php-app"
       git: "github"
     stage: "clone"
   install_dependencies:

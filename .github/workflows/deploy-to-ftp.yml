@@ -1,0 +1,32 @@
+name: Deploy application to ftp
+
+on:
+  workflow_dispatch:
+
+jobs:
+  reschedule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install dependencies
+        uses: composer:1.9.3
+        run: |
+          composer install --ignore-platform-reqs --no-interaction --no-plugins --no-scripts --prefer-dist
+        with:
+          src_folder: /github/workspace/_drafts/
+          dest_folder: /github/workspace/_drafts/
+          days_mask: Tue
+          dry_run: false
+          nb_days_ahead: 7
+          
+      - name: Transferring application to VM via ftp
+        uses: dockito/lftp-client:latest
+        run: |
+          lftp -e "set ftp:use-site-utime2 false; mirror -x ^\.git/$ -X flat-logo.png -p -R ftp-php-ap $PUB_FTP_DIR/ftp-php-app; exit" -u $USER,$PASSWORD $HOST
+        with:
+          - USER=<USER>
+          - PASSWORD=<PASSWORD>
+          - HOST=<HOST>
+          - PUB_FTP_DIR=<PATH/TO/DIR>
+          

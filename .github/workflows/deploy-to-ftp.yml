@@ -11,6 +11,8 @@ jobs:
       
       - name: Install dependencies
         uses: BrightSoftwares/infra-gh-actions/php-composer-dependencies@main
+        with:
+          appdir: /github/workspace/
           
       - name: Transferring application to VM via ftp
         uses: BrightSoftwares/infra-gh-actions/lftp-client@main

@@ -20,5 +20,5 @@ jobs:
           USER: ${{ secrets.FTP_USER }}
           PASSWORD: ${{ secrets.FTP_PASSWORD }}
           HOST: ${{ secrets.FTP_HOST }}
-          PUB_FTP_DIR: ""
+          PUB_FTP_DIR: "/www/pimpmywebsite/"
           
